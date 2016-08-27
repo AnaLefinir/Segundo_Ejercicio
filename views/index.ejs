@@ -9,17 +9,16 @@
 
 <form action="/actions/add/" method="post">
     <input type="text" name="title" placeholder="Title Task" class="title" id="title"><br>
-    <textarea name="description" placeholder="Enter the task description..." id="description">
-    </textarea><br>
+    <textarea name="description" placeholder="Enter task description..." id="description"></textarea><br>
     <input type=submit value="Add" class="submit">
 </form>
 
 <div class="columnTask">
     <% for(var i = 0; i < task.length; i++){ %>
     <div class="task">
-        <input type='checkbox' id="chk_ceil" name="check" onclick='window.location.assign("/actions/checks/<%= task[i].id %>")' >
+        <input type='checkbox' name="check" onclick='window.location.assign("/actions/checks/<%= task[i].id %>")' >
 
-        <h2 id="title<%= task[i].id %>"><%= task[i].title %></h2>
+        <h2><%= task[i].title %></h2>
 
         <p><%= task[i].description %></p>
 

@@ -38,10 +38,6 @@ app.get('/actions/delete/:id', function (req, res) {
 
 app.get('/actions/checks/:id', function (req, res) {
 
-    if (req.params.id != '') {
-        //toDo.checksToList(req.params.id);
-        console.log(req.params.id);
-    }
     res.redirect('/task');
 });
 

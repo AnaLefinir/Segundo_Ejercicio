@@ -9,7 +9,6 @@ var express = require('express'),
 var app = express();
 
 app.use("/public", express.static(__dirname + "/public"));
-app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
@@ -36,8 +35,7 @@ app.get('/actions/delete/:id', function (req, res) {
     res.redirect('/task');
 });
 
-app.get('/actions/checks/:id', function (req, res) {
-
+app.get('/', function (req, res) {
     res.redirect('/task');
 });
 

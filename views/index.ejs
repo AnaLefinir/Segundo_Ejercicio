@@ -16,9 +16,9 @@
 <div class="columnTask">
     <% for(var i = 0; i < task.length; i++){ %>
     <div class="task">
-        <input type='checkbox' name="check" onclick='window.location.assign("/actions/checks/<%= task[i].id %>")' >
+        <input type='checkbox'>
 
-        <h2><%= task[i].title %></h2>
+        <h2 class="title"<%= task[i].id %>><%= task[i].title %></h2>
 
         <p><%= task[i].description %></p>
 

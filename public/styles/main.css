@@ -33,7 +33,6 @@ form textarea{
 a{
     padding-left: 180px;
 }
-
-.cheched{
+input[type=checkbox]:checked + h2 {
     text-decoration: line-through;
 }

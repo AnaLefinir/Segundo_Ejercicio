@@ -6,9 +6,9 @@ var _ = require('underscore');
 var listToDo =
     [
         {
-            "id": 1,
-            "title": "Get Up",
-            "description": "Get up 9am"
+            "id": 3,
+            "title": "Feed Cat",
+            "description": "give cat pro plan"
         },
         {
             "id": 2,
@@ -16,9 +16,9 @@ var listToDo =
             "description": "Make the bed for the cat"
         },
         {
-            "id": 3,
-            "title": "Feed Cat",
-            "description": "give cat pro plan"
+            "id": 1,
+            "title": "Get Up",
+            "description": "Get up 9am"
         }
     ];
 
@@ -28,28 +28,11 @@ exports.list = function(){
 
 exports.addToList = function (data) {
     var maxId = _.max(listToDo, function (item) { return item.id });
-    console.log(data);
     var newTodoItem = { "id": maxId.id + 1, "title": data.title, "description": data.description };
     listToDo.unshift(newTodoItem);
 };
 
 exports.deleteToList = function (id){
-    var indexes = listToDo.map(function(obj, index) {
-        if(obj.id == id) {
-            return index;
-        }
-    }).filter(isFinite);
-
-    listToDo.splice(indexes,1);
+    listToDo.splice(_.findIndex(listToDo, function(obj) { return obj.id == id }),1);
 };
 
-exports.checksToList = function(id){
-    var indexes = listToDo.map(function(obj, index) {
-        if(obj.id == id) {
-            return index;
-        }
-    }).filter(isFinite);
-
-    console.log(listToDo[indexes].title);
-
-};

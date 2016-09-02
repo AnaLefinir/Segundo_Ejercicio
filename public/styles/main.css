@@ -30,7 +30,7 @@ form textarea{
     border: 1px solid blue;
 }
 
-a{
+.del{
     padding-left: 180px;
 }
 input[type=checkbox]:checked + h2 {

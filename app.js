@@ -2,7 +2,7 @@
  * Created by Anita on 24/08/2016.
  */
 var express = require('express'),
-    pug = require('pug'),
+    ejs = require('ejs'),
     toDo = require('./todos.js'),
     bodyParser = require('body-parser');
 
@@ -12,13 +12,13 @@ app.use("/public", express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({
     extended: false
 }));
-app.set('view engine', 'pug');
+app.set('view engine', 'ejs');
 
 
 app.get('/task', function (req, res) {
     var task = toDo.list();
     res.type('text/html');
-    res.render('indexJade', {task: task});
+    res.render('index', {task: task});
 });
 
 app.post('/actions/add/', function (req, res) {
@@ -31,9 +31,11 @@ app.post('/actions/add/', function (req, res) {
 app.get('/actions/delete/:id', function (req, res) {
     if (req.params.id) {
         toDo.deleteToList(req.params.id);
+        console.log('delete!');
     }
     res.redirect('/task');
 });
+
 
 app.get('/', function (req, res) {
     res.redirect('/task');

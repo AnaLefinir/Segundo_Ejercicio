@@ -2,27 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>ToDoList</title>
     <link rel="stylesheet" href="../public/styles/main.css">
 </head>
 <body>
 
 <form action="/actions/add/" method="post">
-    <input type="text" name="title" placeholder="Title Task" class="title" id="title"><br>
-    <textarea name="description" placeholder="Enter task description..." id="description"></textarea><br>
+    <input type="text" name="title" placeholder="Title Task"><br>
+    <textarea name="description" placeholder="Enter task description..."></textarea><br>
     <input type=submit value="Add" class="submit">
 </form>
 
 <div class="columnTask">
-    <% for(var i = 0; i < task.length; i++){ %>
+    <% for(var i = task.length; i > 0; i--){ %>
     <div class="task">
         <input type='checkbox'>
 
-        <h2 class="title"<%= task[i].id %>><%= task[i].title %></h2>
+        <h2 class="title"<%= task[i - 1].id %>><%= task[i - 1].title %></h2>
 
-        <p><%= task[i].description %></p>
+        <p><%= task[i - 1].description %></p>
 
-        <a href="/actions/delete/<%= task[i].id %>">✘</a>
+        <a href="/actions/delete/<%= task[i - 1].id %>">✘</a>
     </div>
     <% } %>
 </div>

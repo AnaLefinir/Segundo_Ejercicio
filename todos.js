@@ -1,14 +1,14 @@
 /**
  * Created by Anita on 26/08/2016.
  */
-var _ = require('underscore');
+var _ = require('lodash');
 
 var listToDo =
     [
         {
-            "id": 3,
-            "title": "Feed Cat",
-            "description": "give cat pro plan"
+            "id": 1,
+            "title": "Get Up",
+            "description": "Get up 9am"
         },
         {
             "id": 2,
@@ -16,9 +16,9 @@ var listToDo =
             "description": "Make the bed for the cat"
         },
         {
-            "id": 1,
-            "title": "Get Up",
-            "description": "Get up 9am"
+            "id": 3,
+            "title": "Feed Cat",
+            "description": "give cat pro plan"
         }
     ];
 
@@ -27,9 +27,9 @@ exports.list = function(){
 };
 
 exports.addToList = function (data) {
-    var maxId = _.max(listToDo, function (item) { return item.id });
+    var maxId = _.maxBy(listToDo, function (item) { return item.id });
     var newTodoItem = { "id": maxId.id + 1, "title": data.title, "description": data.description };
-    listToDo.unshift(newTodoItem);
+    listToDo.push(newTodoItem);
 };
 
 exports.deleteToList = function (id){

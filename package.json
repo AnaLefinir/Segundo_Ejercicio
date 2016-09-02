@@ -1,0 +1,27 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnaLefinir/Segundo_Ejercicio.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AnaLefinir/Segundo_Ejercicio/issues"
+  },
+  "homepage": "https://github.com/AnaLefinir/Segundo_Ejercicio#readme",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "ejs": "^2.5.1",
+    "express": "^4.14.0",
+    "jade": "^1.11.0",
+    "lodash": "^4.15.0",
+    "pug": "^2.0.0-beta6"
+  }
+}

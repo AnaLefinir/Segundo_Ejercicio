@@ -1,0 +1,26 @@
+//Created by Anita on 01/09/2016.
+html
+    head
+        meta(charset="UTF-8")
+        title ToDoList
+        link(href="../public/styles/main.css", rel="stylesheet")
+    body
+        form(action="/actions/add/", method="post")
+            input(type="text", name="title", placeholder="Title Task")
+            br
+            textarea(name="description", placeholder="Enter task description...")
+            br
+            input(type="submit", value="Add", class="submit")
+        div.columnTask
+            -for (var i = task.length; i > 0; i--) {
+                div.task
+                    input(type="checkbox")
+                    h2(class='title' + task[i - 1].id)= task[i - 1].title
+                    p= task[i - 1].description
+                    a(href='/actions/delete/' + task[i - 1].id) X
+            - }
+
+
+
+
+

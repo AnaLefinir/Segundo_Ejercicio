@@ -21,7 +21,7 @@ form textarea{
     float: right;
 }
 
-.columnTask{
+.task-column{
     float: right;
 }
 
@@ -32,7 +32,10 @@ form textarea{
 
 .del{
     padding-left: 180px;
+    width: 10px;
+    height: 10px;
 }
-input[type=checkbox]:checked + h2 {
+
+.set-check {
     text-decoration: line-through;
 }

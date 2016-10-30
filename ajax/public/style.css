@@ -1,0 +1,41 @@
+body {
+    width: 500px;
+}
+
+form{
+    width: 200px;
+    display: inline-block;
+    padding: 10px;
+    border: 2px solid red;
+}
+.title{
+    width: 200px;
+    margin-bottom: 5px;
+}
+form textarea{
+    width: 200px;
+    margin-bottom: 5px;
+    height: 100px;
+}
+.submit{
+    float: right;
+}
+
+.task-column{
+    float: right;
+}
+
+.task {
+    width: 200px;
+    border: 1px solid blue;
+}
+
+.del{
+    padding-left: 180px;
+    width: 10px;
+    height: 10px;
+}
+
+.set-check {
+    text-decoration: line-through;
+}

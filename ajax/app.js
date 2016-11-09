@@ -21,12 +21,14 @@ app.get('/api/tasks', function (req, res) {
 
 app.post('/api/tasks', function (req, res) {
     var infoTask = req.body;
-    var newTask = toDo.addToList(infoTask);
-    res.status(201).json(newTask);
+    toDo.addToList(infoTask);
+    console.log("list after: "+ toDo.list());
+    res.status(201).json(toDo.list());
 });
 
 app.delete('/api/tasks/:id', function (req, res) {
     var id = req.params.id;
+    console.log(id);
     toDo.deleteToList(id);
     res.sendStatus(200);
 });

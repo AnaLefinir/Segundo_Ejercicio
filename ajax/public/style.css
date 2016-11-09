@@ -31,9 +31,11 @@ form textarea{
 }
 
 .del{
-    padding-left: 180px;
     width: 10px;
     height: 10px;
+    position: relative;
+    bottom: 10px;
+    left: 180px;
 }
 
 .set-check {

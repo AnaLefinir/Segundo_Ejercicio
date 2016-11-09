@@ -11,35 +11,49 @@ $(document).ready(function () {
 });
 
 function appendTasks(tasks) {
-    var taskElements = $.map(tasks, createTaskElement);
-    $('.task-column').append(taskElements);
+    getTemplateAjax('/templates/demo.handlebars', function (template) {
+        //do something with compiled template
+        console.log(tasks);
+        var context = tasks;
+        var taskForDisplay = template(context);
+
+
+        $('.task-column').html(taskForDisplay);
+
+        for(var i=0; i<context.length; i++) {
+            if (context[i].done) {
+                console.log("i am checked!"+i);
+                $('.check-element').closest('div').find('.title'+context[i].id).addClass('set-check');
+            }
+        }
+
+        $('.del').on('click', removeTask);
+        $('.check-element').on('change', updateTaskStatus);
+
+
+    });
+
 
 }
 
+function consoleeee() {
+    console.log('hey!');
+};
 
-function createTaskElement(task) {
-    var $listTask = $('<div></div>');
-    var $checkElement = $('<input />', {type: 'checkbox', checked: task.done}).addClass('check-element');
-    $checkElement.data({'taskId': task.id});
-    $checkElement.on('change', updateTaskStatus);
-    $checkElement.appendTo($listTask);
+function getTemplateAjax(path, callback) {
+    var source;
+    var template;
 
+    $.ajax({
+        url: path,
+        success: function (data) {
+            source = data;
+            template = Handlebars.compile(source);
 
-    var $title = $('<h2>' + task.title + '</h2>');
-    $title.appendTo($listTask);
-
-    $('<p>' + task.description + '</p>').appendTo($listTask);
-
-    var $deleteEl = $('<a class="del" href="#" data-id="' + task.id + '">x</a>');
-    $deleteEl.on('click', removeTask);
-    $deleteEl.appendTo($listTask);
-
-    $listTask.addClass('task');
-    if(task.done){
-        $title.addClass('set-check');
-    }
-
-    return $listTask;
+            //execute the callback if passed
+            if (callback) callback(template);
+        }
+    })
 }
 
 function addTask(event) {
@@ -51,8 +65,8 @@ function addTask(event) {
         type: 'POST',
         url: '/api/tasks',
         data: taskData,
-        success: function (task) {
-            appendTasks([task]);
+        success: function (tasks) {
+            appendTasks(tasks);
             form.trigger('reset');
         },
         error: showAjaxError
@@ -61,7 +75,7 @@ function addTask(event) {
 
 function removeTask(event) {
     var target = $(event.currentTarget);
-
+    console.log("delete function!");
     $.ajax({
         type: 'DELETE',
         url: '/api/tasks/' + target.data('id'),
@@ -79,7 +93,7 @@ function showAjaxError(xhr, status, error) {
 function updateTaskStatus($event) {
     $event.preventDefault();
     var $target = $($event.currentTarget);
-    var targetId = $target.data('taskId');
+    var targetId = $target.data('id');
     var isCheck = $target.is(':checked');
 
     $.ajax({
@@ -96,8 +110,3 @@ function updateTaskStatus($event) {
         error: showAjaxError
     })
 }
-
-/*function registerTaskEvent(){
-    $('.del').on('click', removeTask);
-    $checkElement.on('change', updateTaskStatus);
-}*/

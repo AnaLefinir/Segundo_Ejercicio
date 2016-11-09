@@ -16,8 +16,7 @@ function appendTasks(tasks) {
         console.log(tasks);
         var context = tasks;
         var taskForDisplay = template(context);
-
-
+        
         $('.task-column').html(taskForDisplay);
 
         for(var i=0; i<context.length; i++) {
@@ -36,9 +35,6 @@ function appendTasks(tasks) {
 
 }
 
-function consoleeee() {
-    console.log('hey!');
-};
 
 function getTemplateAjax(path, callback) {
     var source;

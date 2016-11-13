@@ -1,43 +1,79 @@
-body {
-    width: 500px;
+
+h1{
+    text-align: center;
+    font-family: 'Dancing Script', Georgia, Times, serif;
+    font-size: 59px;
+    line-height: 60px;
 }
 
-form{
-    width: 200px;
-    display: inline-block;
-    padding: 10px;
-    border: 2px solid red;
+p {
+    font-family: 'Josefin Sans', Helvetica, Arial, sans-serif;
+    font-size: 26px;
+    line-height: 25px;
+    margin: 10px;
+    word-break: normal;
+    white-space: normal;
+
 }
-.title{
-    width: 200px;
-    margin-bottom: 5px;
+
+textarea.form-control{
+    font-family:'Josefin Sans', Helvetica, Arial, sans-serif;
+    font-size: 20px;
+    color: whitesmoke;
 }
-form textarea{
-    width: 200px;
-    margin-bottom: 5px;
-    height: 100px;
+input.form-control{
+    font-family:'Josefin Sans', Helvetica, Arial, sans-serif;
+    font-size: 20px;
+    color: whitesmoke;
 }
+textarea::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color: blue;
+    font-family: 'Josefin Sans', Helvetica, Arial, sans-serif;
+}
+
+input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color: blue;
+    font-family: 'Josefin Sans', Helvetica, Arial, sans-serif;
+}
+
 .submit{
     float: right;
 }
 
-.task-column{
-    float: right;
-}
-
 .task {
-    width: 200px;
-    border: 1px solid blue;
+    border: 2px solid #4EB1BA;
+    border-radius: 20px;
+    margin: 5px;
+    width: 100%;
+    position: relative;
 }
 
 .del{
     width: 10px;
     height: 10px;
-    position: relative;
+    position: absolute;
+    color: darkred;
+    font-size: 18px;
     bottom: 10px;
-    left: 180px;
+    right: 15px;
 }
 
 .set-check {
     text-decoration: line-through;
+}
+
+.set-opacity {
+    opacity: 0.3;
+}
+
+.addTask{
+    border: 2px solid #4EB1BA;
+    border-radius: 20px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.check-element{
+    position: relative;
+    left: 10px
 }

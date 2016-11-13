@@ -14,15 +14,15 @@ function appendTasks(tasks) {
     getTemplateAjax('/templates/demo.handlebars', function (template) {
         //do something with compiled template
         console.log(tasks);
-        var context = tasks;
+        var context = tasks.reverse();
         var taskForDisplay = template(context);
-        
+
         $('.task-column').html(taskForDisplay);
 
         for(var i=0; i<context.length; i++) {
             if (context[i].done) {
-                console.log("i am checked!"+i);
-                $('.check-element').closest('div').find('.title'+context[i].id).addClass('set-check');
+                $('.check-element').closest('div').find('.title-'+context[i].id).addClass('set-check');
+                $('.task-'+context[i].id).addClass("set-opacity");
             }
         }
 
@@ -98,9 +98,11 @@ function updateTaskStatus($event) {
         data: {done: isCheck},
         success: function () {
             if (!isCheck) {
-                $target.closest('div').find('h2').removeClass('set-check');
+                $target.closest('div').find('.title-'+targetId).removeClass('set-check');
+                $('.task-'+targetId).removeClass('set-opacity');
             } else {
-                $target.closest('div').find('h2').addClass('set-check');
+                $target.closest('div').find('.title-'+targetId).addClass('set-check');
+                $('.task-'+targetId).addClass('set-opacity');
             }
         },
         error: showAjaxError

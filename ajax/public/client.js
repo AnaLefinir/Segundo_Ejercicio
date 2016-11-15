@@ -13,7 +13,6 @@ $(document).ready(function () {
 function appendTasks(tasks) {
     getTemplateAjax('/templates/demo.handlebars', function (template) {
         //do something with compiled template
-        console.log(tasks);
         var context = tasks.reverse();
         var taskForDisplay = template(context);
 
@@ -27,9 +26,25 @@ function appendTasks(tasks) {
         }
 
         $('.del').on('click', removeTask);
+        $('.del').on('click', function(){
+            var titleTask;
+            var id = $(this).data('id');
+
+            for(var i=0; i<context.length; i++) {
+                if (context[i].id === id) {
+                    titleTask = context[i].title;
+                }
+            }
+            $(".modal-body #strongTitle").text(titleTask);
+            $("#delete-btn").val(id);
+        });
+
         $('.check-element').on('change', updateTaskStatus);
 
-
+        $(".btn-ok").on('click', function () {
+            var target = $(this).val();
+            removeTask
+        });
     });
 
 
@@ -71,7 +86,6 @@ function addTask(event) {
 
 function removeTask(event) {
     var target = $(event.currentTarget);
-    console.log("delete function!");
     $.ajax({
         type: 'DELETE',
         url: '/api/tasks/' + target.data('id'),

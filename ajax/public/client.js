@@ -7,7 +7,6 @@ $(document).ready(function () {
 
     $('form').on('submit', addTask);
 
-    $('.del').on('click', removeTask);
 });
 
 function appendTasks(tasks) {
@@ -18,36 +17,40 @@ function appendTasks(tasks) {
 
         $('.task-column').html(taskForDisplay);
 
-        for(var i=0; i<context.length; i++) {
+        for (var i = 0; i < context.length; i++) {
             if (context[i].done) {
-                $('.check-element').closest('div').find('.title-'+context[i].id).addClass('set-check');
-                $('.task-'+context[i].id).addClass("set-opacity");
+                $('.check-element').closest('div').find('.title-' + context[i].id).addClass('set-check');
+                $('.task-' + context[i].id).addClass("set-opacity");
             }
         }
 
-        $('.del').on('click', removeTask);
-        $('.del').on('click', function(){
+        $('.del').on('click', function (event) {
+            var target = $(event.currentTarget);
             var titleTask;
             var id = $(this).data('id');
 
-            for(var i=0; i<context.length; i++) {
+            for (var i = 0; i < context.length; i++) {
                 if (context[i].id === id) {
                     titleTask = context[i].title;
                 }
             }
             $(".modal-body #strongTitle").text(titleTask);
-            $("#delete-btn").val(id);
+
+
+
+            $('#confirm-delete').modal('toggle');
+
+            $('.btn-ok').one('click', function () {
+                removeTask(target.data('id'));
+                target.parents('.task').remove();
+                $("#confirm-delete").modal('hide');
+            });
+
         });
+
 
         $('.check-element').on('change', updateTaskStatus);
-
-        $(".btn-ok").on('click', function () {
-            var target = $(this).val();
-            removeTask
-        });
     });
-
-
 }
 
 
@@ -84,13 +87,13 @@ function addTask(event) {
     });
 }
 
-function removeTask(event) {
-    var target = $(event.currentTarget);
+function removeTask(id) {
+
     $.ajax({
         type: 'DELETE',
-        url: '/api/tasks/' + target.data('id'),
+        url: '/api/tasks/' + id,
         success: function () {
-            target.parents('.task').remove();
+            console.log('success!');
         },
         error: showAjaxError
     });
@@ -112,11 +115,11 @@ function updateTaskStatus($event) {
         data: {done: isCheck},
         success: function () {
             if (!isCheck) {
-                $target.closest('div').find('.title-'+targetId).removeClass('set-check');
-                $('.task-'+targetId).removeClass('set-opacity');
+                $target.closest('div').find('.title-' + targetId).removeClass('set-check');
+                $('.task-' + targetId).removeClass('set-opacity');
             } else {
-                $target.closest('div').find('.title-'+targetId).addClass('set-check');
-                $('.task-'+targetId).addClass('set-opacity');
+                $target.closest('div').find('.title-' + targetId).addClass('set-check');
+                $('.task-' + targetId).addClass('set-opacity');
             }
         },
         error: showAjaxError

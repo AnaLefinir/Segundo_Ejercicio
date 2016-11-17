@@ -77,3 +77,7 @@ input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
     position: relative;
     left: 10px
 }
+
+.modal{
+    color: black;
+}

@@ -86,12 +86,13 @@ function addTask(event) {
     var $divContainerInput = $inputRequired.parents('#input-required');
 
 
-    if (($inputRequiredData === 'false' || $inputRequiredTitle === '') || ($inputRequiredData === '' && $inputRequiredTitle === '')) {
+    if (($inputRequiredData === 'false' && $inputRequiredTitle === '') || ($inputRequiredData === '' && $inputRequiredTitle === '')) {
 
-        $divContainerInput.data('pass', 'false');
+        $inputRequired.data('pass', 'false');
+        console.log($inputRequired.data('pass'));
         //PUT MODAL FOR INFORM
 
-    } else if (($inputRequiredData === '' && $inputRequiredTitle !== '') || $inputRequiredData === 'true' && $inputRequiredTitle !== '') {
+    } else if (($inputRequiredData === '' && $inputRequiredTitle !== '') || ($inputRequiredData === 'true' && $inputRequiredTitle !== '')) {
 
         if ($inputRequiredData === 'true') {
 
@@ -99,32 +100,42 @@ function addTask(event) {
 
         } else if ($inputRequiredData === '') {
 
-            var title = $inputRequired.val();
-            var resultRegex = validateAlphanumeric(title);
-
-            if (resultRegex === false) {
-
-                $divContainerInput.data('pass', 'false');
-                $divContainerInput.addClass('has-error');
-                //PUT MODAL FOR INFORM
-
-            } else {
-
-                ajaxCall();
-            }
+            analizeTitleAndDecide();
         }
 
-    } else {
+    } else if($inputRequiredData === 'false' && $inputRequiredTitle !== ''){
+
+        analizeTitleAndDecide();
+
+    } else{
         console.log('esto es un error!');
+        console.log('data: '+$inputRequiredData+'.'+'title: '+$inputRequiredTitle);
     }
 
+
+
+    function analizeTitleAndDecide(){
+        var title = $inputRequired.val();
+        var resultRegex = validateAlphanumeric(title);
+
+        if (resultRegex === false) {
+
+            $inputRequired.data('pass', 'false');
+            $divContainerInput.addClass('has-error');
+            //PUT MODAL FOR INFORM
+
+        } else {
+
+            ajaxCall();
+        }
+    }
 
     function ajaxCall() {
 
         var taskData = $form.serialize();
 
         $divContainerInput.removeClass('has-success');
-        $divContainerInput.data('pass', 'false');
+        $inputRequired.data('pass', 'false');
 
         $.ajax({
             type: 'POST',
@@ -200,6 +211,7 @@ function onTextarea() {
 
     if ($requiredInput.data('pass') === 'false' || $requiredInput.data('pass') === '') {
         $requiredInput.parents('#input-required').addClass('has-error');
+        $requiredInput.data('pass', 'false')
     }
 }
 

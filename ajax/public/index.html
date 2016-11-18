@@ -26,6 +26,16 @@
             margin-right: 15px;
         }
 
+        h4 {
+            font-family: 'Dancing Script', Georgia, Times, serif;
+            font-size: 39px;
+        }
+
+        h5 {
+            font-family: 'Dancing Script', Georgia, Times, serif;
+            font-size: 29px;
+        }
+
         p {
             padding: 10px;
             word-break: normal;
@@ -33,17 +43,6 @@
 
         .form-control {
             color: black;
-        }
-
-        /* Prueba de Media Queries */
-        @media (max-width: 660px) {
-            body {
-                background-color: mediumvioletred;
-            }
-
-            .ey {
-
-            }
         }
     </style>
 </head>
@@ -54,11 +53,10 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
                 <h1>Delete Confirm</h1>
             </div>
             <div class="modal-body">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-                <br>
                 <p>Are you sure to delete "<strong id="strongTitle"></strong>" task? </p>
             </div>
             <div class="modal-footer">
@@ -71,14 +69,44 @@
 
 <!-- End: Modal Bootstrap for Delete Confirm -->
 
-<!-- Initial: Modal Bootstrap example -->
-<div class="tooltip top" role="tooltip">
-    <div class="tooltip-arrow"></div>
-    <div class="tooltip-inner">
-        Some tooltip text!
+<!-- Initial: Modal Bootstrap for Empty Form -->
+
+<div class="modal fade" id="empty-title" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Error Uploading Task</h4>
+            </div>
+            <div class="modal-body">
+                <p>In order to upload a task you need at least a title</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
 </div>
-<!-- Initial: Modal Bootstrap example -->
+
+<!-- End: Modal Bootstrap for Empty Form -->
+
+<!-- Initial: Modal Bootstrap for Invalid Title -->
+<div class="modal fade" id="invalid-title" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h5 class="modal-title">Invalid Title!</h5>
+            </div>
+            <div class="modal-body">
+                <p>In order to upload a task you need change the title</p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End: Modal Bootstrap for Invalid Title-->
 
 <div class="container">
 
@@ -88,12 +116,13 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-4 col-md-offset-2 col-sm-5 col-sm-offset-1 col-xs-6  addTask">
+        <div class="col-md-4 col-md-offset-2 col-sm-5 col-sm-offset-1 col-xs-6 displayForm">
             <form>
                 <div id="input-required">
-                    <input type="text" id="input" class="form-control" style="background:transparent;" name="title" placeholder="Title Task"
+                    <input type="text" id="input" class="form-control" style="background:transparent;" name="title"
+                           placeholder="Title Task"
                            data-toggle="popover" data-trigger="hover" data-placement="right"
-                           data-content="Campo Requerido" data-pass =''><br>
+                           data-content="Required field" data-pass=''><br>
                 </div>
                 <div>
                     <textarea class="form-control" rows="3" style="background:transparent;" name="description"
@@ -102,7 +131,7 @@
                 </div>
             </form>
         </div>
-        <div class="col-md-4 col-sm-5 col-xs-6 ey">
+        <div class="col-md-4 col-sm-5 col-xs-6 displayTask">
             <div class="task-column">
 
             </div>

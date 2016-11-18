@@ -36,9 +36,11 @@ function appendTasks(tasks) {
         $('.check-element').on('change', updateTaskStatus);
 
         function addModalToDeleteBtn(event) {
-            var target = $(event.currentTarget);
+            var $target = $(event.currentTarget);
             var titleTask;
             var id = $(this).data('id');
+
+            $target.parents('.container').find('#input-required').removeClass('has-error');
 
             for (var i = 0; i < context.length; i++) {
                 if (context[i].id === id) {
@@ -51,8 +53,8 @@ function appendTasks(tasks) {
             $('#confirm-delete').modal('toggle');
 
             $('.btn-ok').one('click', function () {
-                removeTask(target.data('id'));
-                target.parents('.task').remove();
+                removeTask($target.data('id'));
+                $target.parents('.task').remove();
                 $("#confirm-delete").modal('hide');
             })
         }
@@ -82,35 +84,35 @@ function addTask(event) {
 
     var $form = $(this);
     var $inputRequired = $form.find('input.form-control');
-    var $inputRequiredTitle = $inputRequired.val();
-    var $inputRequiredData = $inputRequired.data('pass');
+    var inputRequiredTitle = $inputRequired.val();
+    var inputRequiredData = $inputRequired.data('pass');
     var $divContainerInput = $inputRequired.parents('#input-required');
 
 
-    if (($inputRequiredData === 'false' && $inputRequiredTitle === '') || ($inputRequiredData === '' && $inputRequiredTitle === '')) {
+    if ((inputRequiredData === 'false' && inputRequiredTitle === '') || (inputRequiredData === '' && inputRequiredTitle === '')) {
 
         $inputRequired.data('pass', 'false');
-        console.log($inputRequired.data('pass'));
-        //PUT MODAL FOR INFORM
 
-    } else if (($inputRequiredData === '' && $inputRequiredTitle !== '') || ($inputRequiredData === 'true' && $inputRequiredTitle !== '')) {
+        $('#empty-title').modal('show');
 
-        if ($inputRequiredData === 'true') {
+    } else if ((inputRequiredData === '' && inputRequiredTitle !== '') || (inputRequiredData === 'true' && inputRequiredTitle !== '')) {
+
+        if (inputRequiredData === 'true') {
 
             ajaxCall();
 
-        } else if ($inputRequiredData === '') {
+        } else if (inputRequiredData === '') {
 
             analizeTitleAndDecide();
         }
 
-    } else if($inputRequiredData === 'false' && $inputRequiredTitle !== ''){
+    } else if(inputRequiredData === 'false' && inputRequiredTitle !== ''){
 
         analizeTitleAndDecide();
 
     } else{
         console.log('esto es un error!');
-        console.log('data: '+$inputRequiredData+'.'+'title: '+$inputRequiredTitle);
+        console.log('data: '+inputRequiredData+'.'+'title: '+inputRequiredTitle);
     }
 
 
@@ -123,8 +125,8 @@ function addTask(event) {
 
             $inputRequired.data('pass', 'false');
             $divContainerInput.addClass('has-error');
-            //PUT MODAL FOR INFORM
 
+            $('#invalid-title').modal('show');
         } else {
 
             ajaxCall();
@@ -181,6 +183,7 @@ function updateTaskStatus($event) {
                 $target.closest('div').find('.title-' + targetId).addClass('set-check');
                 $('.task-' + targetId).addClass('set-opacity');
             }
+            $target.parents('.container').find('#input-required').removeClass('has-error');
         },
         error: showAjaxError
     })
@@ -195,6 +198,7 @@ function blurInput() {
     if (!resultRegex) {
         $targetParentDiv.addClass('has-error');
         $target.data('pass', 'false');
+        $('#invalid-title').modal('show');
     } else {
         $targetParentDiv.addClass('has-success').removeClass('has-error');
         $target.data('pass', 'true');

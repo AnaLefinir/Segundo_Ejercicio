@@ -48,7 +48,7 @@
     </style>
 </head>
 <body>
-<!-- Initial: Modal Bootstrap example -->
+<!-- Initial: Modal Bootstrap for Delete Confirm -->
 
 <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
     <div class="modal-dialog">
@@ -69,7 +69,16 @@
     </div>
 </div>
 
-<!-- End: Modal Bootstrap example -->
+<!-- End: Modal Bootstrap for Delete Confirm -->
+
+<!-- Initial: Modal Bootstrap example -->
+<div class="tooltip top" role="tooltip">
+    <div class="tooltip-arrow"></div>
+    <div class="tooltip-inner">
+        Some tooltip text!
+    </div>
+</div>
+<!-- Initial: Modal Bootstrap example -->
 
 <div class="container">
 
@@ -82,8 +91,9 @@
         <div class="col-md-4 col-md-offset-2 col-sm-5 col-sm-offset-1 col-xs-6  addTask">
             <form>
                 <div id="input-required">
-                    <input type="text" class="form-control" style="background:transparent;" name="title"
-                           placeholder="Title Task" data-pass =''><br>
+                    <input type="text" id="input" class="form-control" style="background:transparent;" name="title" placeholder="Title Task"
+                           data-toggle="popover" data-trigger="hover" data-placement="right"
+                           data-content="Campo Requerido" data-pass =''><br>
                 </div>
                 <div>
                     <textarea class="form-control" rows="3" style="background:transparent;" name="description"

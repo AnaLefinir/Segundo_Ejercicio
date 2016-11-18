@@ -81,3 +81,11 @@ input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
 .modal{
     color: black;
 }
+
+.popover{
+    width: 150px;
+}
+
+.popover-content{
+    color: black;
+}

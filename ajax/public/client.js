@@ -10,8 +10,9 @@ $(document).ready(function () {
     $('input').focus(focusInput)
               .blur(blurInput);
 
-    $('textarea').on('click', onTextarea)
+    $('textarea').on('click', onTextarea);
 
+    $('#input').popover();
 
 });
 

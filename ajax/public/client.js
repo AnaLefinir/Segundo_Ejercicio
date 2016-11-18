@@ -41,6 +41,7 @@ function appendTasks(tasks) {
             var id = $(this).data('id');
 
             $target.parents('.container').find('#input-required').removeClass('has-error');
+            $target.parents('.container').find('#input').val('');
 
             for (var i = 0; i < context.length; i++) {
                 if (context[i].id === id) {
@@ -184,6 +185,7 @@ function updateTaskStatus($event) {
                 $('.task-' + targetId).addClass('set-opacity');
             }
             $target.parents('.container').find('#input-required').removeClass('has-error');
+            $target.parents('.container').find('#input').val('');
         },
         error: showAjaxError
     })
@@ -198,7 +200,6 @@ function blurInput() {
     if (!resultRegex) {
         $targetParentDiv.addClass('has-error');
         $target.data('pass', 'false');
-        $('#invalid-title').modal('show');
     } else {
         $targetParentDiv.addClass('has-success').removeClass('has-error');
         $target.data('pass', 'true');

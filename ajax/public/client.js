@@ -41,7 +41,7 @@ function appendTasks(tasks) {
             var id = $(this).data('id');
 
             $target.parents('.container').find('#input-required').removeClass('has-error');
-            $target.parents('.container').find('#input').val('');
+            $target.parents('.container').find('form').trigger('reset');
 
             for (var i = 0; i < context.length; i++) {
                 if (context[i].id === id) {
@@ -185,7 +185,7 @@ function updateTaskStatus($event) {
                 $('.task-' + targetId).addClass('set-opacity');
             }
             $target.parents('.container').find('#input-required').removeClass('has-error');
-            $target.parents('.container').find('#input').val('');
+            $target.parents('.container').find('form').trigger('reset');
         },
         error: showAjaxError
     })

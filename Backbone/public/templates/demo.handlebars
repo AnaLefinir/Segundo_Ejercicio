@@ -1,0 +1,13 @@
+{{#each this}}
+    <div class="task task-{{id}}">
+
+        <input type='checkbox' class="check-element" data-id={{id}} {{#if done}} checked="checked" {{/if}}>
+
+        <h2 class="title-{{id}}">{{title}}</h2>
+        <hr>
+        <p>{{description}}</p>
+
+        <div class="del" data-id={{id}}>✘</div>
+
+    </div>
+{{/each}}

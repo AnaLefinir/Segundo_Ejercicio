@@ -1,3 +1,2 @@
-ejs_0.9_alpha_1_production.js
-/node_modules
-/.idea
+node_modules/
+.idea/

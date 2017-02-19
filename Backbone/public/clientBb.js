@@ -22,7 +22,6 @@ $(document).ready(function () {
 
 
     var TodoView = Backbone.View.extend({
-        tagName: 'li',
         initialize: function () {
           this.render();
         },
@@ -35,7 +34,6 @@ $(document).ready(function () {
     });
 
     var TodoCollectionView = Backbone.View.extend({
-        tagName: 'ul',
         initialize: function () {
             this.render();
         },
@@ -53,11 +51,12 @@ $(document).ready(function () {
 
 
     var todoCollectionView = new TodoCollectionView({collection: todoCollection});
-    $('.task-column').append(todoCollectionView.render().el);
+
+
 
     todoCollection.fetch({
         success: function(){
-            console.log(todoCollection.models);
+            $('.task-column').append(todoCollectionView.render().el);
         },
         error: function () {
             console.log('auch!');

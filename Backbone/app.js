@@ -21,8 +21,9 @@ app.get('/api/tasks', function (req, res) {
 
 app.post('/api/tasks', function (req, res) {
     var infoTask = req.body;
-    toDo.addToList(infoTask);
-    res.status(201).json(toDo.list());
+    var newTask = toDo.addToList(infoTask);
+    console.log(newTask);
+    res.status(201).json(newTask);
 });
 
 app.delete('/api/tasks/:id', function (req, res) {

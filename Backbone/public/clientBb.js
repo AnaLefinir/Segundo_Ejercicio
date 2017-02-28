@@ -59,15 +59,20 @@ $(document).ready(function () {
      * Inicio addTask
      */
 
-    var TodoForm = Backbone.View.extend({
-        template: Handlebars.compile( $('#templateForm').html() ),
+    var AddTodoView = Backbone.View.extend({
+        template: Handlebars.compile( $('#addTodoTemplate').html() ),
         events: {
-            'click button': 'save'
+            'click button': 'addTodo'
         },
-        save: function (e) {
+        addTodo: function (e) {
             e.preventDefault();
             var newTitle = this.$('input[name=title]').val();
-            this.model.save({title: newTitle});
+            var newDescription = this.$('textarea[name=description]').val();
+            console.log(this.model);
+            this.model.save({title: newTitle, description: newDescription}, {success: function (model, response) {
+                var newView = new TodoView ({model: model});
+                $('.task-column').append(newView.render().el);
+            }});
         },
         render: function () {
             this.$el.html(this.template(this.model.attributes));
@@ -76,6 +81,7 @@ $(document).ready(function () {
     });
 
     var todoItem = new TodoModel();
-    var todoForm = new TodoForm({model: todoItem});
+    var todoForm = new AddTodoView({model: todoItem});
+    console.log(todoForm.render().el);
     $('.displayForm').html(todoForm.render().el);
 });

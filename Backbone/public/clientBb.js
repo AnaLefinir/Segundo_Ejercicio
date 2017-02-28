@@ -5,12 +5,7 @@ $(document).ready(function () {
 
 
     var TodoModel = Backbone.Model.extend({
-        defaults: {
-            id: 0,
-            title: null,
-            description: null,
-            done: false
-        }
+        urlRoot: '/api/tasks'
     });
 
     var TodoCollection = Backbone.Collection.extend({
@@ -51,9 +46,6 @@ $(document).ready(function () {
 
 
     var todoCollectionView = new TodoCollectionView({collection: todoCollection});
-
-
-
     todoCollection.fetch({
         success: function(){
             $('.task-column').append(todoCollectionView.render().el);
@@ -63,6 +55,27 @@ $(document).ready(function () {
         }
     });
 
+    /**
+     * Inicio addTask
+     */
 
+    var TodoForm = Backbone.View.extend({
+        template: Handlebars.compile( $('#templateForm').html() ),
+        events: {
+            'click button': 'save'
+        },
+        save: function (e) {
+            e.preventDefault();
+            var newTitle = this.$('input[name=title]').val();
+            this.model.save({title: newTitle});
+        },
+        render: function () {
+            this.$el.html(this.template(this.model.attributes));
+            return this;
+        }
+    });
 
+    var todoItem = new TodoModel();
+    var todoForm = new TodoForm({model: todoItem});
+    $('.displayForm').html(todoForm.render().el);
 });

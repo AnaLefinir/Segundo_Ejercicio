@@ -31,7 +31,7 @@ exports.list = function(){
 
 exports.addToList = function (infoTask) {
     var maxId = _.maxBy(listToDo, function (item) { return item.id });
-    var newTodoItem = { "id": (maxId ? maxId.id : 0) + 1, "title": infoTask.title, "description": infoTask.description, "done": false };
+    var newTodoItem = { "id": (maxId ? maxId.id : 0) + 1, "title": infoTask.title, "description": infoTask.description, "done": infoTask.done };
     listToDo.push(newTodoItem);
 
     return newTodoItem;

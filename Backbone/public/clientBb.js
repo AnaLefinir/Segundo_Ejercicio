@@ -6,7 +6,6 @@ $(document).ready(function () {
     _.extend(Backbone.Model.prototype, Backbone.Validation.mixin);
     _.extend(Backbone.Validation.callbacks, {
         valid: function (view, name, selector) {
-            console.log('ok!');
             var $el = view.$('[name=' + name + ']');
             $el.removeClass('has-error');
             var $errorDisplay = $el.siblings('.error-description');
@@ -104,8 +103,8 @@ $(document).ready(function () {
                     success: function (model, response) {
                         todoCollection.add(model);
                         self.model = new TodoModel();
-                        //Backbone.Validation.bind(self);
-                        //self.render();
+                        Backbone.Validation.bind(self);
+                        self.render();
                     }, error: function(model, response, options){
                         console.log(response);
                     }

@@ -3,8 +3,40 @@
  */
 $(document).ready(function () {
 
+    _.extend(Backbone.Model.prototype, Backbone.Validation.mixin);
+    _.extend(Backbone.Validation.callbacks, {
+        valid: function (view, name, selector) {
+            console.log('ok!');
+            var $el = view.$('[name=' + name + ']');
+            $el.removeClass('has-error');
+            var $errorDisplay = $el.siblings('.error-description');
+            $errorDisplay.addClass('hidden')
+        },
+        invalid: function (view, name, error, selector) {
+            var $el = view.$('[name=' + name + ']');
+            $el.addClass('has-error');
+            var $errorDisplay = $el.siblings('.error-description');
+            $errorDisplay.html(error);
+            $errorDisplay.removeClass('hidden');
+        }
+    });
 
     var TodoModel = Backbone.Model.extend({
+        defaults: {
+            title: null,
+            description: null,
+            done: false
+        },
+        validation: {
+            title: {
+                required: true,
+                msg: 'Please enter a title'
+            },
+            description: {
+                required: true,
+                msg: 'Please enter a description'
+            }
+        },
         urlRoot: '/api/tasks'
     });
 
@@ -15,12 +47,11 @@ $(document).ready(function () {
     var todoCollection = new TodoCollection();
 
 
-
     var TodoView = Backbone.View.extend({
         initialize: function () {
-          this.render();
+            this.render();
         },
-        template: Handlebars.compile( $('#template').html() ),
+        template: Handlebars.compile($('#template').html()),
         render: function () {
             var attributes = this.model.toJSON();
             this.$el.html(this.template(attributes));
@@ -30,24 +61,19 @@ $(document).ready(function () {
 
     var TodoCollectionView = Backbone.View.extend({
         initialize: function () {
-            this.render();
+            this.collection.on('add', this.addOne, this);
         },
-        addOne: function(todoModel){
+
+        addOne: function (todoModel) {
             var todoView = new TodoView({model: todoModel});
             this.$el.append(todoView.render().el);
-        },
-
-        render: function () {
-            this.collection.each(this.addOne, this);
-            return this;
         }
-
     });
 
 
     var todoCollectionView = new TodoCollectionView({collection: todoCollection});
     todoCollection.fetch({
-        success: function(){
+        success: function () {
             $('.task-column').append(todoCollectionView.render().el);
         },
         error: function () {
@@ -60,19 +86,32 @@ $(document).ready(function () {
      */
 
     var AddTodoView = Backbone.View.extend({
-        template: Handlebars.compile( $('#addTodoTemplate').html() ),
+        initialize: function () {
+            Backbone.Validation.bind(this);
+        },
+        template: Handlebars.compile($('#addTodoTemplate').html()),
         events: {
             'click button': 'addTodo'
         },
         addTodo: function (e) {
+            var self = this;
             e.preventDefault();
-            var newTitle = this.$('input[name=title]').val();
-            var newDescription = this.$('textarea[name=description]').val();
-            console.log(this.model);
-            this.model.save({title: newTitle, description: newDescription}, {success: function (model, response) {
-                var newView = new TodoView ({model: model});
-                $('.task-column').append(newView.render().el);
-            }});
+            var data = getTaskData(self.$el);
+
+            this.model.set(data);
+            if (this.model.isValid(true)) {
+                self.model.save(null, {
+                    success: function (model, response) {
+                        todoCollection.add(model);
+                        self.model = new TodoModel();
+                        //Backbone.Validation.bind(self);
+                        //self.render();
+                    }, error: function(model, response, options){
+                        console.log(response);
+                    }
+                });
+            }
+
         },
         render: function () {
             this.$el.html(this.template(this.model.attributes));
@@ -82,6 +121,24 @@ $(document).ready(function () {
 
     var todoItem = new TodoModel();
     var todoForm = new AddTodoView({model: todoItem});
-    console.log(todoForm.render().el);
     $('.displayForm').html(todoForm.render().el);
+
+
+    function validateAlphanumeric(string) {
+        var regex = /^[-a-z0-9,\/()&:. ]*[a-z][-a-z0-9,\/()&:. \!]*$/;
+        var reSource = regex.source;
+        var regexFinal = new RegExp(reSource, 'i');
+
+        return regexFinal.test(string);
+    }
+
+    function getTaskData($el) {
+        var title = $el.find("input[name='title']").val();
+        var description = $el.find("textarea[name='description']").val();
+
+        return {
+            title: title,
+            description: description
+        };
+    }
 });

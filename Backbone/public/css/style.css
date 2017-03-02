@@ -84,3 +84,12 @@ input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
 .popover-content{
     color: black;
 }
+
+.has-error{
+    border: 2px solid red;
+}
+
+.error-description{
+    color: red;
+    font-size: small;
+}

@@ -70,6 +70,10 @@ $(document).ready(function () {
         render: function () {
             var attributes = this.model.toJSON();
             this.$el.html(this.template(attributes));
+            if(this.model.get('done') === true){
+                $(this.el).addClass('set-opacity');
+                $(this.el).find('.title-'+ this.model.get('id') ).addClass('set-check');
+            }
             return this;
         },
         removeTask: function () {

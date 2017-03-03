@@ -48,7 +48,6 @@ exports.doneTask = function (id, done){
     }else{
         task.done = true;
     }
-    console.log('llegue al fin!');
 };
 
 exports.updateTask = function (infoTask) {

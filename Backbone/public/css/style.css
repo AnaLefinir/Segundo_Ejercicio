@@ -112,3 +112,10 @@ input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
     float: right;
     margin-left: 5px;
 }
+
+.edit{
+    position: absolute;
+    bottom: 2px;
+    right: 40px;
+    color: darkgreen;
+}

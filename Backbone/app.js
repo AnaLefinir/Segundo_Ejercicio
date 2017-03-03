@@ -21,7 +21,6 @@ app.get('/api/tasks', function (req, res) {
 
 app.post('/api/tasks', function (req, res) {
     var infoTask = req.body;
-    console.log(infoTask);
     var newTask = toDo.addToList(infoTask);
     res.status(201).json(newTask);
 });
@@ -32,12 +31,17 @@ app.delete('/api/tasks/:id', function (req, res) {
     res.sendStatus(200);
 });
 
-app.put('/api/tasks/:id', function(req, res){
+app.put('/api/tasks/status/:id', function(req, res){
     var id = req.params.id;
     var done = req.body.done;
-    console.log(done);
     toDo.doneTask(id, done);
     res.sendStatus(200);
+});
+
+app.put('/api/tasks/update/:id', function(req, res){
+    var changeInTask = req.body;
+    var taskUpdate = toDo.updateTask(changeInTask);
+    res.status(201).json(taskUpdate);
 });
 
 app.listen(8080, function () {

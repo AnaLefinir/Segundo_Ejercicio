@@ -58,10 +58,13 @@ $(document).ready(function () {
     var TodoView = Backbone.View.extend({
         initialize: function () {
             this.render();
+            _.bindAll(this, "render");
+            this.model.bind('change', this.render);
         },
         events:{
             'click .del': 'removeTask',
-            'click .check-element': 'changeStatus'
+            'click .check-element': 'changeStatus',
+            'click .edit': 'editTask'
         },
         template: Handlebars.compile($('#template').html()),
         render: function () {
@@ -77,15 +80,23 @@ $(document).ready(function () {
             var self = this;
             if(this.model.get('done')=== false){
                 this.model.set({'done': true});
-                this.model.save();
+                this.model.save(null, {
+                    url: '/api/tasks/status/' + this.model.get('id')
+                });
                 $(self.el).addClass('set-opacity');
                 $(self.el).find('.title-'+ self.model.get('id') ).addClass('set-check');
             }else{
                 this.model.set({'done': false});
-                this.model.save();
+                this.model.save(null, {
+                    url: '/api/tasks/status/' + this.model.get('id')
+                });
                 $(self.el).removeClass('set-opacity');
                 $(self.el).find('.title-'+ self.model.get('id') ).removeClass('set-check');
             }
+        },
+        editTask: function () {
+            var todoForm = new AddTodoView({model: this.model});
+            $('.displayForm').html(todoForm.render().el);
         }
     });
 
@@ -130,18 +141,35 @@ $(document).ready(function () {
             var data = getTaskData(self.$el);
 
             this.model.set(data);
-            if (this.model.isValid(true)) {
-                self.model.save(null, {
-                    success: function (model, response) {
-                        todoCollection.add(model);
-                        self.model = new TodoModel();
-                        Backbone.Validation.bind(self);
-                        self.render();
-                    }, error: function(model, response, options){
-                        console.log(response);
-                    }
-                });
+            if(this.model.get('id') == undefined){
+                if (this.model.isValid(true)) {
+                    self.model.save(null, {
+                        success: function (model, response) {
+                            todoCollection.add(model);
+                            self.model = new TodoModel();
+                            Backbone.Validation.bind(self);
+                            self.render();
+                        }, error: function(model, response, options){
+                            console.log(response);
+                        }
+                    });
+                }
+            }else{
+                if (this.model.isValid(true)) {
+                    self.model.save(null, {
+                        url: '/api/tasks/update/' + this.model.get('id'),
+                        success: function (model, response) {
+                            todoCollection.add(model);
+                            self.model = new TodoModel();
+                            Backbone.Validation.bind(self);
+                            self.render();
+                        }, error: function(model, response, options){
+                            console.log(response);
+                        }
+                    });
+                }
             }
+
 
         },
         render: function () {

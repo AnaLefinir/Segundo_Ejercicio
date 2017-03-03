@@ -48,4 +48,13 @@ exports.doneTask = function (id, done){
     }else{
         task.done = true;
     }
+    console.log('llegue al fin!');
+};
+
+exports.updateTask = function (infoTask) {
+    var index = _.findIndex(listToDo, function(obj) { return obj.id == infoTask.id });
+    listToDo[index].title = infoTask.title;
+    listToDo[index].description = infoTask.description;
+
+    return listToDo[index];
 };

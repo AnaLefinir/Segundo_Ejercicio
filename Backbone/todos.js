@@ -43,7 +43,7 @@ exports.deleteToList = function (id){
 
 exports.doneTask = function (id, done){
     var task =_.find(listToDo, function(obj) { return obj.id == id });
-    if(done === 'false'){
+    if(done === false){
         task.done = false;
     }else{
         task.done = true;

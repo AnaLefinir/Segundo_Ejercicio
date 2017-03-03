@@ -20,6 +20,12 @@ $(document).ready(function () {
         }
     });
 
+    Backbone.eventsMine =_.extend({}, Backbone.Events);
+
+    /**
+     * Backbone
+     */
+
     var TodoModel = Backbone.Model.extend({
         defaults: {
             title: null,
@@ -39,6 +45,8 @@ $(document).ready(function () {
         urlRoot: '/api/tasks'
     });
 
+
+
     var TodoCollection = Backbone.Collection.extend({
         model: TodoModel,
         url: '/api/tasks'
@@ -46,17 +54,43 @@ $(document).ready(function () {
     var todoCollection = new TodoCollection();
 
 
+
     var TodoView = Backbone.View.extend({
         initialize: function () {
             this.render();
+        },
+        events:{
+            'click .del': 'removeTask',
+            'click .check-element': 'changeStatus'
         },
         template: Handlebars.compile($('#template').html()),
         render: function () {
             var attributes = this.model.toJSON();
             this.$el.html(this.template(attributes));
             return this;
+        },
+        removeTask: function () {
+            this.el.remove();
+            this.model.destroy();
+        },
+        changeStatus: function () {
+            var self = this;
+            if(this.model.get('done')=== false){
+                this.model.set({'done': true});
+                this.model.save();
+                $(self.el).addClass('set-opacity');
+                $(self.el).find('.title-'+ self.model.get('id') ).addClass('set-check');
+            }else{
+                this.model.set({'done': false});
+                this.model.save();
+                $(self.el).removeClass('set-opacity');
+                $(self.el).find('.title-'+ self.model.get('id') ).removeClass('set-check');
+            }
         }
     });
+
+
+
 
     var TodoCollectionView = Backbone.View.extend({
         initialize: function () {
@@ -69,7 +103,6 @@ $(document).ready(function () {
         }
     });
 
-
     var todoCollectionView = new TodoCollectionView({collection: todoCollection});
     todoCollection.fetch({
         success: function () {
@@ -80,9 +113,8 @@ $(document).ready(function () {
         }
     });
 
-    /**
-     * Inicio addTask
-     */
+
+
 
     var AddTodoView = Backbone.View.extend({
         initialize: function () {
@@ -122,15 +154,6 @@ $(document).ready(function () {
     var todoForm = new AddTodoView({model: todoItem});
     $('.displayForm').html(todoForm.render().el);
 
-
-    function validateAlphanumeric(string) {
-        var regex = /^[-a-z0-9,\/()&:. ]*[a-z][-a-z0-9,\/()&:. \!]*$/;
-        var reSource = regex.source;
-        var regexFinal = new RegExp(reSource, 'i');
-
-        return regexFinal.test(string);
-    }
-
     function getTaskData($el) {
         var title = $el.find("input[name='title']").val();
         var description = $el.find("textarea[name='description']").val();
@@ -140,4 +163,5 @@ $(document).ready(function () {
             description: description
         };
     }
+
 });

@@ -93,3 +93,22 @@ input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
     color: red;
     font-size: small;
 }
+
+.confirm{
+    visibility: hidden;
+    position: relative;
+    left: 0;
+    top: -650px;
+}
+
+.confirmTemplate{
+    background-color: black;
+    color: white;
+    text-align: center;
+    height: 200px;
+}
+
+.confirmTemplate button{
+    float: right;
+    margin-left: 5px;
+}

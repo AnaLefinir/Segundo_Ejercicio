@@ -35,6 +35,7 @@ app.delete('/api/tasks/:id', function (req, res) {
 app.put('/api/tasks/:id', function(req, res){
     var id = req.params.id;
     var done = req.body.done;
+    console.log(done);
     toDo.doneTask(id, done);
     res.sendStatus(200);
 });

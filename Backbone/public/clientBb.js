@@ -58,8 +58,6 @@ $(document).ready(function () {
     var TodoView = Backbone.View.extend({
         initialize: function () {
             this.render();
-            _.bindAll(this, "render");
-            this.model.bind('change', this.render);
         },
         events:{
             'click .del': 'removeTask',
@@ -101,6 +99,7 @@ $(document).ready(function () {
         editTask: function () {
             var todoForm = new AddTodoView({model: this.model});
             $('.displayForm').html(todoForm.render().el);
+            $('#input').val(this.model.get('title'));
         }
     });
 

@@ -34,8 +34,9 @@ $(document).ready(function () {
         },
         validation: {
             title: {
-                required: true,
-                msg: 'Please enter a title'
+                fn: function (value, attr) {
+                    return validateAlphanumeric(value);
+                }
             },
             description: {
                 required: true,
@@ -193,6 +194,17 @@ $(document).ready(function () {
             title: title,
             description: description
         };
+    }
+
+    function validateAlphanumeric(string) {
+        var regex = /^[-a-z0-9,\/()&:. ]*[a-z][-a-z0-9,\/()&:. \!]*$/;
+        var reSource = regex.source;
+        var regexFinal = new RegExp(reSource, 'i');
+        var result = regexFinal.test(string);
+
+        if(!result){
+            return "Please enter a valid title";
+        }
     }
 
 });

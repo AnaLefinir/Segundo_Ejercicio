@@ -113,9 +113,15 @@ input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
     margin-left: 5px;
 }
 
-.edit{
+.edit {
     position: absolute;
     bottom: 2px;
     right: 40px;
     color: darkgreen;
+}
+
+.confirmModal{
+    position: absolute;
+    left: 50px;
+    bottom: 940px;
 }

@@ -2,7 +2,6 @@
  * Created by anita on 18/2/2017.
  */
 $(document).ready(function () {
-
     _.extend(Backbone.Model.prototype, Backbone.Validation.mixin);
     _.extend(Backbone.Validation.callbacks, {
         valid: function (view, name, selector) {
@@ -20,7 +19,7 @@ $(document).ready(function () {
         }
     });
 
-    Backbone.eventsMine =_.extend({}, Backbone.Events);
+    Backbone.eventsMine = _.extend({}, Backbone.Events);
 
     /**
      * Backbone
@@ -43,9 +42,8 @@ $(document).ready(function () {
                 msg: 'Please enter a description'
             }
         },
-        urlRoot: '/api/tasks'
+        urlRoot: '/api/tasks',
     });
-
 
 
     var TodoCollection = Backbone.Collection.extend({
@@ -55,13 +53,14 @@ $(document).ready(function () {
     var todoCollection = new TodoCollection();
 
 
-
     var TodoView = Backbone.View.extend({
         initialize: function () {
             this.render();
+            this.model.bind('change', this.refreshForm, this);
+            Backbone.Validation.bind(this);
         },
-        events:{
-            'click .del': 'removeTask',
+        events: {
+            'click .del': 'confirmRemoveTask',
             'click .check-element': 'changeStatus',
             'click .edit': 'editTask'
         },
@@ -69,42 +68,55 @@ $(document).ready(function () {
         render: function () {
             var attributes = this.model.toJSON();
             this.$el.html(this.template(attributes));
-            if(this.model.get('done') === true){
+            if (this.model.get('done') === true) {
                 $(this.el).addClass('set-opacity');
-                $(this.el).find('.title-'+ this.model.get('id') ).addClass('set-check');
+                $(this.el).find('.title-' + this.model.get('id')).addClass('set-check');
             }
             return this;
         },
-        removeTask: function () {
-            this.el.remove();
-            this.model.destroy();
+        confirmRemoveTask: function () {
+            var that = this;
+            var modal = new ModalView({
+                model: that.model,
+                removeTask: function () {
+                    that.el.remove();
+                    that.model.destroy();
+                },
+                body: 'BODY'
+            });
+            modal.render();
         },
         changeStatus: function () {
             var self = this;
-            if(this.model.get('done')=== false){
+            if (this.model.get('done') === false) {
                 this.model.set({'done': true});
                 this.model.save(null, {
                     url: '/api/tasks/status/' + this.model.get('id')
                 });
                 $(self.el).addClass('set-opacity');
-                $(self.el).find('.title-'+ self.model.get('id') ).addClass('set-check');
-            }else{
+                $(self.el).find('.title-' + self.model.get('id')).addClass('set-check');
+            } else {
                 this.model.set({'done': false});
                 this.model.save(null, {
                     url: '/api/tasks/status/' + this.model.get('id')
                 });
                 $(self.el).removeClass('set-opacity');
-                $(self.el).find('.title-'+ self.model.get('id') ).removeClass('set-check');
+                $(self.el).find('.title-' + self.model.get('id')).removeClass('set-check');
             }
         },
         editTask: function () {
             var todoForm = new AddTodoView({model: this.model});
             $('.displayForm').html(todoForm.render().el);
             $('#input').val(this.model.get('title'));
+        },
+        refreshForm: function () {
+            if (this.model.isValid(true)) {
+                this.render();
+            } else {
+                setTimeout(emptyForm, 2000);
+            }
         }
     });
-
-
 
 
     var TodoCollectionView = Backbone.View.extend({
@@ -129,8 +141,6 @@ $(document).ready(function () {
     });
 
 
-
-
     var AddTodoView = Backbone.View.extend({
         initialize: function () {
             Backbone.Validation.bind(this);
@@ -145,7 +155,7 @@ $(document).ready(function () {
             var data = getTaskData(self.$el);
 
             this.model.set(data);
-            if(this.model.get('id') == undefined){
+            if (this.model.get('id') == undefined) {
                 if (this.model.isValid(true)) {
                     self.model.save(null, {
                         success: function (model, response) {
@@ -153,12 +163,12 @@ $(document).ready(function () {
                             self.model = new TodoModel();
                             Backbone.Validation.bind(self);
                             self.render();
-                        }, error: function(model, response, options){
+                        }, error: function (model, response, options) {
                             console.log(response);
                         }
                     });
                 }
-            }else{
+            } else {
                 if (this.model.isValid(true)) {
                     self.model.save(null, {
                         url: '/api/tasks/update/' + this.model.get('id'),
@@ -167,7 +177,7 @@ $(document).ready(function () {
                             self.model = new TodoModel();
                             Backbone.Validation.bind(self);
                             self.render();
-                        }, error: function(model, response, options){
+                        }, error: function (model, response, options) {
                             console.log(response);
                         }
                     });
@@ -182,9 +192,28 @@ $(document).ready(function () {
         }
     });
 
-    var todoItem = new TodoModel();
-    var todoForm = new AddTodoView({model: todoItem});
-    $('.displayForm').html(todoForm.render().el);
+    emptyForm();
+
+    var ModalView = Backbone.View.extend({
+        el: '#confirm-modal',
+        events:{
+            'click .btn-ok': 'runCallBack'
+        },
+        initialize: function(args){
+            $(".modal-body #strongTitle").text(args.model.get('title'));
+            this.removeTask = args.removeTask;
+        },
+        render: function(){
+            this.$el.modal("show");
+        },
+        close: function(){
+            this.$el.modal("close");
+        },
+        runCallBack: function(){
+            this.removeTask();
+        }
+
+    });
 
     function getTaskData($el) {
         var title = $el.find("input[name='title']").val();
@@ -202,9 +231,18 @@ $(document).ready(function () {
         var regexFinal = new RegExp(reSource, 'i');
         var result = regexFinal.test(string);
 
-        if(!result){
+        if (!result) {
             return "Please enter a valid title";
         }
     }
 
+    function emptyForm() {
+        var todoItem = new TodoModel();
+        var todoForm = new AddTodoView({model: todoItem});
+        $('.displayForm').html(todoForm.render().el);
+    }
 });
+/**render: function () {
+    $(".modal-body #strongTitle").text(this.model.get('title'));
+    $('#confirm-delete').modal('toggle');
+}**/

@@ -49,8 +49,28 @@
 </head>
 <body>
 
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                <h1>Delete Confirm</h1>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure to delete "<strong id="strongTitle"></strong>" task? </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger btn-ok" id="delete-btn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="container">
+    <div class="confirmModal">
+
+    </div>
     <div class="main">
         <div class="row">
             <div class="page-header">
@@ -69,12 +89,12 @@
             </div>
         </div>
     </div>
-    <div class="confirm">
-
-    </div>
 </div>
 
 </body>
+
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
 <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
@@ -126,4 +146,5 @@
         <button type="button" class="btn btn-default">Cancel</button>
     </div>
 </script>
+
 </html>

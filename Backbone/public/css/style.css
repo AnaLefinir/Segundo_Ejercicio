@@ -1,0 +1,115 @@
+
+h1{
+    text-align: center;
+}
+
+p {
+    font-family: 'Josefin Sans', Helvetica, Arial, sans-serif;
+    font-size: 26px;
+    line-height: 25px;
+    margin: 10px;
+    word-break: normal;
+    white-space: normal;
+}
+
+textarea.form-control{
+    font-family:'Josefin Sans', Helvetica, Arial, sans-serif;
+    font-size: 20px;
+    color: whitesmoke;
+}
+input.form-control{
+    font-family:'Josefin Sans', Helvetica, Arial, sans-serif;
+    font-size: 20px;
+    color: whitesmoke;
+}
+textarea::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    font-family: 'Josefin Sans', Helvetica, Arial, sans-serif;
+}
+
+input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    font-family: 'Josefin Sans', Helvetica, Arial, sans-serif;
+}
+
+.submit{
+    float: right;
+}
+
+.task {
+    border: 2px solid #4EB1BA;
+    border-radius: 20px;
+    margin: 5px;
+    width: 100%;
+    position: relative;
+}
+
+.del{
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    color: darkred;
+    font-size: 18px;
+    bottom: 10px;
+    right: 15px;
+}
+
+.set-check {
+    text-decoration: line-through;
+}
+
+.set-opacity {
+    opacity: 0.3;
+}
+
+.displayForm{
+    border: 2px solid #4EB1BA;
+    border-radius: 20px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.check-element{
+    position: relative;
+    left: 10px
+}
+
+.modal{
+    color: black;
+}
+
+.popover{
+    width: 130px;
+}
+
+.popover-content{
+    color: black;
+}
+
+.has-error{
+    border: 2px solid red;
+}
+
+.error-description{
+    color: red;
+    font-size: small;
+}
+
+.confirmTemplate{
+    background-color: black;
+    color: white;
+    text-align: center;
+    height: 200px;
+}
+
+.confirmTemplate button{
+    float: right;
+    margin-left: 5px;
+}
+
+.edit {
+    position: absolute;
+    bottom: 2px;
+    right: 40px;
+    color: darkgreen;
+}
+

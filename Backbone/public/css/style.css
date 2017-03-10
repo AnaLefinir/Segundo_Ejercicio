@@ -94,13 +94,6 @@ input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
     font-size: small;
 }
 
-.confirm{
-    visibility: hidden;
-    position: relative;
-    left: 0;
-    top: -650px;
-}
-
 .confirmTemplate{
     background-color: black;
     color: white;
@@ -120,8 +113,3 @@ input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
     color: darkgreen;
 }
 
-.confirmModal{
-    position: absolute;
-    left: 50px;
-    bottom: 940px;
-}

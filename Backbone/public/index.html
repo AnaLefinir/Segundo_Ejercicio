@@ -48,8 +48,30 @@
     </style>
 </head>
 <body>
+    <div class="container">
 
-<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+        <div class="main">
+            <div class="row">
+                <div class="page-header">
+                    <h1> ToDo List </h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-md-offset-2 col-sm-5 col-sm-offset-1 col-xs-6 displayForm">
+
+
+                </div>
+                <div class="col-md-4 col-sm-5 col-xs-6 displayTask">
+                    <div class="task-column">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="basicModal"
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -57,7 +79,7 @@
                 <h1>Delete Confirm</h1>
             </div>
             <div class="modal-body">
-                <p>Are you sure to delete "<strong id="strongTitle"></strong>" task? </p>
+                <p>Are you sure to delete "<strong id="strongTitle">{{title}}</strong>" task? </p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -66,33 +88,7 @@
         </div>
     </div>
 </div>
-
-<div class="container">
-    <div class="confirmModal">
-
-    </div>
-    <div class="main">
-        <div class="row">
-            <div class="page-header">
-                <h1> ToDo List </h1>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4 col-md-offset-2 col-sm-5 col-sm-offset-1 col-xs-6 displayForm">
-
-
-            </div>
-            <div class="col-md-4 col-sm-5 col-xs-6 displayTask">
-                <div class="task-column">
-
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 </body>
-
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
@@ -103,7 +99,7 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.3.3/backbone-min.js"></script>
 <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/backbone.validation/0.11.5/backbone-validation-min.js"></script>
-<script src="clientBb.js"></script>
+<script src="client.js"></script>
 
 <script id="template" type="text/x-handlebars">
     <div class="task task-{{id}}">
@@ -114,7 +110,8 @@
         <hr>
         <p>{{description}}</p>
 
-        <span class="edit"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></span> <div class="del" data-id={{id}}>✘</div>
+        <span class="edit"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></span>
+        <div class="del" data-id={{id}}>✘</div>
 
     </div>
 </script>
@@ -136,15 +133,6 @@
         </div>
         <button type=submit class="btn btn-primary submit"> Add Task!</button>
     </form>
-</script>
-
-<script id="confirmDeleteTemplate" type="text/x-handlebars">
-    <div class="confirmTemplate">
-        <h1>Confirm Delete</h1>
-        <p>Do you wanna delete {{title}}'s task?</p>
-        <button type="button" class="btn btn-danger">Delete</button>
-        <button type="button" class="btn btn-default">Cancel</button>
-    </div>
 </script>
 
 </html>

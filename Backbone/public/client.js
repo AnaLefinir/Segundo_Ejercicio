@@ -1,234 +1,241 @@
 /**
- * Created by Anita on 10/09/2016.
+ * Created by anita on 18/2/2017.
  */
-
 $(document).ready(function () {
-    $.getJSON('/api/tasks', appendTasks);
-
-    $('form').on('submit', addTask);
-
-    $('input').focus(focusInput)
-              .blur(blurInput);
-
-    $('textarea').on('click', onTextarea);
-
-    $('#input').popover();
-
-});
-
-
-function appendTasks(tasks) {
-    getTemplateAjax('/templates/demo.handlebars', function (template) {
-        //do something with compiled template
-        var context = tasks.reverse();
-        var taskForDisplay = template(context);
-
-        $('.task-column').html(taskForDisplay);
-
-        for (var i = 0; i < context.length; i++) {
-            if (context[i].done) {
-                $('.check-element').closest('div').find('.title-' + context[i].id).addClass('set-check');
-                $('.task-' + context[i].id).addClass("set-opacity");
-            }
+    _.extend(Backbone.Model.prototype, Backbone.Validation.mixin);
+    _.extend(Backbone.Validation.callbacks, {
+        valid: function (view, name, selector) {
+            var $el = view.$('[name=' + name + ']');
+            $el.removeClass('has-error');
+            var $errorDisplay = $el.siblings('.error-description');
+            $errorDisplay.addClass('hidden')
+        },
+        invalid: function (view, name, error, selector) {
+            var $el = view.$('[name=' + name + ']');
+            $el.addClass('has-error');
+            var $errorDisplay = $el.siblings('.error-description');
+            $errorDisplay.html(error);
+            $errorDisplay.removeClass('hidden');
         }
+    });
 
-        $('.del').on('click', addModalToDeleteBtn);
-        $('.check-element').on('change', updateTaskStatus);
+    Backbone.eventsMine = _.extend({}, Backbone.Events);
 
-        function addModalToDeleteBtn(event) {
-            var $target = $(event.currentTarget);
-            var titleTask;
-            var id = $(this).data('id');
+    /**
+     * Backbone
+     */
 
-            $target.parents('.container').find('#input-required').removeClass('has-error');
-            $target.parents('.container').find('form').trigger('reset');
+    var TodoModel = Backbone.Model.extend({
+        defaults: {
+            title: null,
+            description: null,
+            done: false
+        },
+        validation: {
+            title: {
+                fn: function (value, attr) {
+                    return validateAlphanumeric(value);
+                }
+            },
+            description: {
+                required: true,
+                msg: 'Please enter a description'
+            }
+        },
+        urlRoot: '/api/tasks',
+    });
 
-            for (var i = 0; i < context.length; i++) {
-                if (context[i].id === id) {
-                    titleTask = context[i].title;
+
+    var TodoCollection = Backbone.Collection.extend({
+        model: TodoModel,
+        url: '/api/tasks'
+    });
+    var todoCollection = new TodoCollection();
+
+
+    var TodoView = Backbone.View.extend({
+        initialize: function () {
+            this.render();
+            this.model.bind('change', this.refreshForm, this);
+            Backbone.Validation.bind(this);
+        },
+        events: {
+            'click .del': 'confirmRemoveTask',
+            'click .check-element': 'changeStatus',
+            'click .edit': 'editTask'
+        },
+        template: Handlebars.compile($('#template').html()),
+        render: function () {
+            var attributes = this.model.toJSON();
+            this.$el.html(this.template(attributes));
+            if (this.model.get('done') === true) {
+                $(this.el).addClass('set-opacity');
+                $(this.el).find('.title-' + this.model.get('id')).addClass('set-check');
+            }
+            return this;
+        },
+        confirmRemoveTask: function () {
+            var modal = new ModalView({model: this.model});
+            modal.render();
+            modal.on('removeOk', this.removeTask, this)
+        },
+        changeStatus: function () {
+            var self = this;
+            if (this.model.get('done') === false) {
+                this.model.set({'done': true});
+                this.model.save(null, {
+                    url: '/api/tasks/status/' + this.model.get('id')
+                });
+                $(self.el).addClass('set-opacity');
+                $(self.el).find('.title-' + self.model.get('id')).addClass('set-check');
+            } else {
+                this.model.set({'done': false});
+                this.model.save(null, {
+                    url: '/api/tasks/status/' + this.model.get('id')
+                });
+                $(self.el).removeClass('set-opacity');
+                $(self.el).find('.title-' + self.model.get('id')).removeClass('set-check');
+            }
+        },
+        editTask: function () {
+            var todoForm = new AddTodoView({model: this.model});
+            $('.displayForm').html(todoForm.render().el);
+            $('#input').val(this.model.get('title'));
+        },
+        refreshForm: function () {
+            if (this.model.isValid(true)) {
+                this.render();
+            } else {
+                setTimeout(emptyForm, 2000);
+            }
+        },
+        removeTask: function () {
+            this.el.remove();
+            this.model.destroy();
+        }
+    });
+
+
+    var TodoCollectionView = Backbone.View.extend({
+        initialize: function () {
+            this.collection.on('add', this.addOne, this);
+        },
+
+        addOne: function (todoModel) {
+            var todoView = new TodoView({model: todoModel});
+            this.$el.append(todoView.render().el);
+        }
+    });
+
+    var todoCollectionView = new TodoCollectionView({collection: todoCollection});
+    todoCollection.fetch({
+        success: function () {
+            $('.task-column').append(todoCollectionView.render().el);
+        },
+        error: function () {
+            console.log('auch!');
+        }
+    });
+
+
+    var AddTodoView = Backbone.View.extend({
+        initialize: function () {
+            Backbone.Validation.bind(this);
+        },
+        template: Handlebars.compile($('#addTodoTemplate').html()),
+        events: {
+            'click button': 'addTodo'
+        },
+        addTodo: function (e) {
+            var self = this;
+            e.preventDefault();
+            var data = getTaskData(self.$el);
+
+            this.model.set(data);
+            if (this.model.get('id') == undefined) {
+                if (this.model.isValid(true)) {
+                    self.model.save(null, {
+                        success: function (model, response) {
+                            todoCollection.add(model);
+                            self.model = new TodoModel();
+                            Backbone.Validation.bind(self);
+                            self.render();
+                        }, error: function (model, response, options) {
+                            console.log(response);
+                        }
+                    });
+                }
+            } else {
+                if (this.model.isValid(true)) {
+                    self.model.save(null, {
+                        url: '/api/tasks/update/' + this.model.get('id'),
+                        success: function (model, response) {
+                            todoCollection.add(model);
+                            self.model = new TodoModel();
+                            Backbone.Validation.bind(self);
+                            self.render();
+                        }, error: function (model, response, options) {
+                            console.log(response);
+                        }
+                    });
                 }
             }
-            $(".modal-body #strongTitle").text(titleTask);
 
 
-            $('#confirm-delete').modal('toggle');
-
-            $('.btn-ok').one('click', function () {
-                removeTask($target.data('id'));
-                $target.parents('.task').remove();
-                $("#confirm-delete").modal('hide');
-            })
-        }
-
-    });
-}
-
-
-function getTemplateAjax(path, callback) {
-    var source;
-    var template;
-
-    $.ajax({
-        url: path,
-        success: function (data) {
-            source = data;
-            template = Handlebars.compile(source);
-
-            //execute the callback if passed
-            if (callback) callback(template);
-        }
-    })
-}
-
-function addTask(event) {
-    event.preventDefault();
-
-    var $form = $(this);
-    var $inputRequired = $form.find('input.form-control');
-    var inputRequiredTitle = $inputRequired.val();
-    var inputRequiredData = $inputRequired.data('pass');
-    var $divContainerInput = $inputRequired.parents('#input-required');
-
-
-    if ((inputRequiredData === 'false' && inputRequiredTitle === '') || (inputRequiredData === '' && inputRequiredTitle === '')) {
-
-        $inputRequired.data('pass', 'false');
-
-        $('#empty-title').modal('show');
-
-    } else if ((inputRequiredData === '' && inputRequiredTitle !== '') || (inputRequiredData === 'true' && inputRequiredTitle !== '')) {
-
-        if (inputRequiredData === 'true') {
-
-            ajaxCall();
-
-        } else if (inputRequiredData === '') {
-
-            analizeTitleAndDecide();
-        }
-
-    } else if(inputRequiredData === 'false' && inputRequiredTitle !== ''){
-
-        analizeTitleAndDecide();
-
-    } else{
-        console.log('esto es un error!');
-        console.log('data: '+inputRequiredData+'.'+'title: '+inputRequiredTitle);
-    }
-
-
-
-    function analizeTitleAndDecide(){
-        var title = $inputRequired.val();
-        var resultRegex = validateAlphanumeric(title);
-
-        if (resultRegex === false) {
-
-            $inputRequired.data('pass', 'false');
-            $divContainerInput.addClass('has-error');
-
-            $('#invalid-title').modal('show');
-        } else {
-
-            ajaxCall();
-        }
-    }
-
-    function ajaxCall() {
-
-        var taskData = $form.serialize();
-
-        $divContainerInput.removeClass('has-success');
-        $inputRequired.data('pass', 'false');
-
-        $.ajax({
-            type: 'POST',
-            url: '/api/tasks',
-            data: taskData,
-            success: function (tasks) {
-                appendTasks(tasks);
-                $form.trigger('reset');
-            },
-            error: showAjaxError
-        });
-    }
-}
-
-function removeTask(id) {
-
-    $.ajax({
-        type: 'DELETE',
-        url: '/api/tasks/' + id,
-        success: function () {
-            console.log('success!');
         },
-        error: showAjaxError
+        render: function () {
+            this.$el.html(this.template(this.model.attributes));
+            return this;
+        }
     });
-}
 
-function updateTaskStatus($event) {
-    $event.preventDefault();
-    var $target = $($event.currentTarget);
-    var targetId = $target.data('id');
-    var isCheck = $target.is(':checked');
+    emptyForm();
 
-    $.ajax({
-        type: 'PUT',
-        url: '/api/tasks/' + targetId,
-        data: {done: isCheck},
-        success: function () {
-            if (!isCheck) {
-                $target.closest('div').find('.title-' + targetId).removeClass('set-check');
-                $('.task-' + targetId).removeClass('set-opacity');
-            } else {
-                $target.closest('div').find('.title-' + targetId).addClass('set-check');
-                $('.task-' + targetId).addClass('set-opacity');
-            }
-            $target.parents('.container').find('#input-required').removeClass('has-error');
-            $target.parents('.container').find('form').trigger('reset');
+    var ModalView = Backbone.View.extend({
+        el: $('#confirm-delete'),
+        template: Handlebars.compile($('#confirm-delete').html()),
+        events:{
+            'click .btn-ok': 'confirmDelete'
         },
-        error: showAjaxError
-    })
-}
+        confirmDelete: function () {
+            this.trigger('removeOk');
+            this.$el.modal('hide');
+        },
+        render: function () {
+            var attributes = this.model.toJSON();
+            this.$el.html(this.template(attributes));
+            this.$el.modal('show');
+        }
+    });
 
-function blurInput() {
-    var $target = $(this);
-    var textInput = $target.val();
-    var $targetParentDiv = $target.parent('div');
-    var resultRegex = validateAlphanumeric(textInput);
+    function getTaskData($el) {
+        var title = $el.find("input[name='title']").val();
+        var description = $el.find("textarea[name='description']").val();
 
-    if (!resultRegex) {
-        $targetParentDiv.addClass('has-error');
-        $target.data('pass', 'false');
-    } else {
-        $targetParentDiv.addClass('has-success').removeClass('has-error');
-        $target.data('pass', 'true');
+        return {
+            title: title,
+            description: description
+        };
     }
-}
 
-function focusInput() {
-    var $target = $(this);
-    $target.parent('div').addClass('has-error');
-}
+    function validateAlphanumeric(string) {
+        var regex = /^[-a-z0-9,\/()&:. ]*[a-z][-a-z0-9,\/()&:. \!]*$/;
+        var reSource = regex.source;
+        var regexFinal = new RegExp(reSource, 'i');
+        var result = regexFinal.test(string);
 
-function onTextarea() {
-    var $target = $(this);
-    var $requiredInput = $target.closest('form').find('input.form-control');
-
-    if ($requiredInput.data('pass') === 'false' || $requiredInput.data('pass') === '') {
-        $requiredInput.parents('#input-required').addClass('has-error');
-        $requiredInput.data('pass', 'false')
+        if (!result) {
+            return "Please enter a valid title";
+        }
     }
-}
 
-function showAjaxError(xhr, status, error) {
-    console.log('[' + status + '] ' + error);
-}
-
-function validateAlphanumeric(string) {
-    var regex = /^[-a-z0-9,\/()&:. ]*[a-z][-a-z0-9,\/()&:. \!]*$/;
-    var reSource = regex.source;
-    var regexFinal = new RegExp(reSource, 'i');
-
-    return regexFinal.test(string);
-};
+    function emptyForm() {
+        var todoItem = new TodoModel();
+        var todoForm = new AddTodoView({model: todoItem});
+        $('.displayForm').html(todoForm.render().el);
+    }
+});
+/**render: function () {
+    $(".modal-body #strongTitle").text(this.model.get('title'));
+    $('#confirm-delete').modal('toggle');
+}**/
